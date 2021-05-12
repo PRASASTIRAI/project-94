@@ -12,13 +12,51 @@ firebaseConfig = {
     };
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
+    student_name = localStorage.getItem("student_name");
+document.getElementById("student_name").innerHTML = "welcome" + student_name;
 
-function getData() {firebase.database().ref("/").on('value', function(snapshot) {document.getElementById("output").innerHTML = "";snapshot.forEach(function(childSnapshot) {childKey  = childSnapshot.key;
-       Room_names = childKey;
-      //Start code
+function addChat()
+{
+      room_name=document.getElementById("room_name").value;
+      firebase.database().ref("/").child(room_name).update({
+            purpose:"adding room name"
+      });
 
-      //End code
-      });});}
+     localStorage.setItem("room_name", room_name);
+     window.location="chat_page.html";
+}
+
+function getData() {
+      firebase.database().ref("/").on('value',
+            function (snapshot) {
+                  document.getElementById("output").innerHTML = "";
+                  snapshot.forEach(function (childSnapshot) {
+                        childKey = childSnapshot.key;
+                        Room_names = childKey;
+                        //Start code
+                        console.log("room_name",Room_names);
+                        row = "<div class='room_name' id="+Room_names+
+                        " onclick='redirectToRoomName(this.id)' >#"+ Room_names +"</div><hr>"; 
+                        document.getElementById("output").innerHTML += row;
+
+                        //End code
+                  });
+            });
+}
+
+function redirectToRoomName(names){
+      console.log(names);
+      localStorage.setItem("room_name",names);
+      window.location("chat_page.html");
+
+
+}
+
+function logout(){
+      window.location("index.html")
+}
+
+
 getData();
  //function addroom start//
  //function addroom end//
